@@ -10,15 +10,16 @@ import { useState } from "react";
 import AuthModal from "../Auth/AuthModal";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../features/AuthSlice.js";
+import { toggleCart } from "../../features/CartSlice.js";
 
-function Header({ toggleClone }) {
+function Header() {
   const [showAuth, setShowAuth] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleCloneToggle = () => {
-    toggleClone();
+    dispatch(toggleCart());
   };
 
   const openAuth = () => setShowAuth(true);
@@ -41,118 +42,171 @@ function Header({ toggleClone }) {
 
   const formattedTotalPrice = totalPrice.toLocaleString("en-IN", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
   });
 
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <div className="w-full py-2 px-4 flex items-center justify-between fixed top-0 left-0 bg-white z-50 shadow-sm">
-      <Link to={"/"}>
-        <img
-          src={Logo}
-          alt="logo"
-          className="w-[100px] cursor-pointer max-md:w-[50px]"
-        />
-      </Link>
-      <Location />
-
-      <Search />
-
-      <div className="flex items-center gap-18 max-sm:gap-4">
-        {!user ? (
-          <button
-            onClick={openAuth}
-            className="text-xl cursor-pointer max-md:text-sm"
-          >
-            Login
-          </button>
-        ) : (
-          <div className="relative">
-            <button
-              onClick={openAccountMenu}
-              className="text-xl cursor-pointer max-md:text-sm flex items-center gap-2"
+    <>
+      <div className="w-full fixed top-0 left-0 bg-white z-50 shadow-sm border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto h-16 md:h-20 px-4 md:px-8 lg:px-12 flex items-center justify-between gap-4">
+          {/* Left: Logo & Location */}
+          <div className="flex items-center gap-4 md:gap-8 flex-shrink-0">
+            <Link
+              to={"/"}
+              className="transition-transform hover:scale-105 duration-200"
             >
-              <span className="hidden md:inline">Account</span>
-              <span className="md:hidden">{user?.name || "Account"}</span>
-              <svg
-                className="w-4 h-4 ml-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.939l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 01.02-1.06z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
+              <img
+                src={Logo}
+                alt="logo"
+                className="w-[45px] md:w-[90px] h-auto object-contain"
+              />
+            </Link>
 
-            {showAccountMenu && (
-              <div className="absolute right-[-1] mt-2 w-32 text-sm bg-white rounded-md shadow-lg z-90">
-                <button
-                  onClick={() => {
-                    navigate("/account?section=home");
-                    closeAccountMenu();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Account
-                </button>
-                <button
-                  onClick={() => {
-                    navigate("/account?section=orders");
-                    closeAccountMenu();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Orders
-                </button>
-                <button
-                  onClick={() => {
-                    navigate("/account?section=giftcards");
-                    closeAccountMenu();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Gift Cards
-                </button>
-                <button
-                  onClick={() => {
-                    navigate("/account?section=addresses");
-                    closeAccountMenu();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Address
-                </button>
-                <div className="border-t" />
-                <button
-                  onClick={() => {
-                    if (window.confirm("Are you sure you want to logout?")) {
-                      dispatch(logout());
-                      navigate("/");
-                    }
-                    closeAccountMenu();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Log Out
-                </button>
-              </div>
-            )}
+            <div className="hidden lg:block border-l border-gray-200 pl-8">
+              <Location />
+            </div>
           </div>
-        )}
-        <button
-          onClick={handleCloneToggle}
-          className="bg-green-600 py-5 px-7 rounded-xl text-sm font-medium  cursor-pointer text-white max-md:py-3 max-md:px-4 max-md:rounded-md max-sm:py-4 max-sm:px-2 max-sm:text-[12px]"
-        >
-          <i className="ri-shopping-cart-2-line"></i> My Cart ({totalItems}){" "}
-          {formattedTotalPrice}
-        </button>
+
+          {/* Center: Search Bar (Desktop) */}
+          <div className="hidden md:block flex-1 max-w-2xl px-4">
+            <Search />
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2 md:gap-6 flex-shrink-0">
+            {/* Mobile Search Icon/Small Input (via Search component) */}
+            <div className="md:hidden flex-1 min-w-[120px]">
+              <Search />
+            </div>
+
+            {/* User Account */}
+            <div className="relative flex items-center">
+              {!user ? (
+                <button
+                  onClick={openAuth}
+                  className="hidden md:block px-4 py-2 rounded-lg font-bold text-gray-700 hover:text-green-600 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+                >
+                  Login
+                </button>
+              ) : (
+                <div className="relative group">
+                  <button
+                    onClick={openAccountMenu}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-gray-700 hover:text-green-600 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+                  >
+                    <i className="ri-user-3-line text-lg lg:text-xl"></i>
+                    <span className="hidden lg:block text-sm font-black uppercase tracking-wider">
+                      Account
+                    </span>
+                    <i
+                      className={`ri-arrow-down-s-line transition-transform duration-200 ${showAccountMenu ? "rotate-180" : ""}`}
+                    ></i>
+                  </button>
+
+                  {showAccountMenu && (
+                    <div className="absolute right-0 mt-3 w-52 bg-white rounded-xl shadow-2xl z-[100] border border-gray-100 py-2 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                      <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                          Profile
+                        </p>
+                        <p className="text-sm font-black text-gray-800 truncate">
+                          {user.name || "User"}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          navigate("/account?section=home");
+                          closeAccountMenu();
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors flex items-center gap-3"
+                      >
+                        <i className="ri-user-line font-medium"></i>
+                        <span className="text-sm font-semibold">Settings</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/account?section=orders");
+                          closeAccountMenu();
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors flex items-center gap-3"
+                      >
+                        <i className="ri-shopping-bag-line font-medium"></i>
+                        <span className="text-sm font-semibold">My Orders</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          handleCloneToggle();
+                          closeAccountMenu();
+                        }}
+                        className="md:hidden w-full text-left px-4 py-2.5 hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors flex items-center gap-3"
+                      >
+                        <i className="ri-shopping-cart-2-line font-medium"></i>
+                        <span className="text-sm font-semibold">My Cart</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (window.confirm("Logout?")) {
+                            dispatch(logout());
+                            navigate("/");
+                          }
+                          closeAccountMenu();
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 transition-colors flex items-center gap-3"
+                      >
+                        <i className="ri-logout-box-line font-medium"></i>
+                        <span className="text-sm font-bold">Logout</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Mobile Profile Icon (Visible if logged out and on mobile) */}
+              {!user && (
+                <button
+                  onClick={openAuth}
+                  className="md:hidden w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"
+                >
+                  <i className="ri-user-line text-lg"></i>
+                </button>
+              )}
+            </div>
+
+            {/* Cart Button */}
+            <button
+              onClick={handleCloneToggle}
+              className="hidden md:flex bg-green-600 hover:bg-green-700 h-10 md:h-12 px-3 md:px-5 rounded-xl items-center gap-2 md:gap-3 text-white shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 cursor-pointer "
+            >
+              <div className="relative">
+                <i className="ri-shopping-cart-2-line text-lg md:text-xl"></i>
+                {totalItems > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-green-900 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                    {totalItems}
+                  </span>
+                )}
+              </div>
+              <div className="hidden sm:flex flex-col items-start leading-none text-left">
+                <span className="text-[10px] opacity-80 font-bold uppercase tracking-tighter">
+                  My Cart
+                </span>
+                <span className="text-xs md:text-sm font-black">
+                  {formattedTotalPrice}
+                </span>
+              </div>
+              <span className="sm:hidden text-xs font-black">
+                {formattedTotalPrice}
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
+
       {showAuth && <AuthModal onClose={closeAuth} />}
-    </div>
+    </>
   );
 }
 

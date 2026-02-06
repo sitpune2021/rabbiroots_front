@@ -12,17 +12,12 @@ import AboutUs from "../../pages/Policy/AboutUs";
 import ContactUs from "../../pages/Policy/ContactUs";
 import ReturnPolicy from "../../pages/Policy/ReturnPolicy";
 
-function Layout({ clone, setClone, toggleClone }) {
+function Layout() {
   return (
     <div className="w-full h-full mt-17">
       <ScrollToTop />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Home clone={clone} setClone={setClone} toggleClone={toggleClone} />
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/showitem/:id" element={<ShowItem />} />
         <Route path="/productlisting" element={<ProductListing />} />
@@ -32,7 +27,6 @@ function Layout({ clone, setClone, toggleClone }) {
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
-
       </Routes>
     </div>
   );

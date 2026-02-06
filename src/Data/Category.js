@@ -16,7 +16,7 @@ export const categoryItem = [
   { "id": 15, "image": "/category/15.avif" },
   { "id": 16, "image": "/category/16.avif" },
   { "id": 17, "image": "/category/17.avif" },
-  // { "id": 18, "image": "/category/18.avif" },
-  // { "id": 19, "image": "/category/19.avif" },
-  // { "id": 20, "image": "/category/20.avif" },
+  { "id": 18, "image": "/category/18.avif" },
+  { "id": 19, "image": "/category/19.avif" },
+  { "id": 20, "image": "/category/20.avif" },
 ]

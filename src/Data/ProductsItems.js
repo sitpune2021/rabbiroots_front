@@ -5,7 +5,7 @@ export const ProductsItems = {
       name: "Amul Gold Full Cream Milk",
       size: "500 ml",
       price: 35,
-      image: "./Product/ProductOne/TigerImage.webp",
+      image: "./Product/ProductOne/1.avif",
       deliveryTime: "10 MINS",
       ali: true,
       description:

@@ -35,7 +35,7 @@ function Location() {
       },
       () => {
         alert("Unable to retrieve your location");
-      }
+      },
     );
   };
 
@@ -81,7 +81,7 @@ function Location() {
 
       {open && (
         <div
-          className="absolute mt-5 right-0 w-72 bg-white p-5 z-20 
+          className="absolute mt-5 righ t-0 w-72 bg-white p-5 z-20 
 rounded-[16px] shadow-[0_6px_20px_rgba(0,0,0,0.15)] border border-gray-100 
 animate-softPop"
         >

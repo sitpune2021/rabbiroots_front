@@ -1,176 +1,173 @@
-import { useState } from "react";
-import OtpVerify from "./OtpVerify";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/AuthSlice";
 
-export default function PhoneLogin() {
+export default function PhoneLogin({ onClose }) {
   const [phone, setPhone] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState("phone"); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
-  const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ""); // Only digits
-    if (value.length <= 10) {
-      setPhone(value);
-      setError("");
-    }
-  };
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  const sendOTP = async () => {
-    if (phone.length !== 10) {
+    // Validate phone number
+    if (!phone || phone.length !== 10) {
       setError("Please enter a valid 10-digit phone number");
       return;
     }
 
     setLoading(true);
-    setError("");
 
     try {
-      // Simulate API call - replace with your actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // await axios.post("http://localhost:5000/auth/send-otp", { phone });
-      setOtpSent(true);
+    
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setStep("otp");
+      setLoading(false);
     } catch (err) {
-      console.error(err);
       setError("Failed to send OTP. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && phone.length === 10) {
-      sendOTP();
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    // Validate OTP
+    if (!otp || otp.length !== 6) {
+      setError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+    
+      // Simulate API call and mock user data
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const mockUser = {
+        id: "1",
+        name: "User",
+        phone: phone,
+        token: "mock-token-123",
+      };
+
+      dispatch(login(mockUser));
+
+      setLoading(false);
+      onClose();
+    } catch (err) {
+      setError("Invalid OTP. Please try again.");
+      setLoading(false);
     }
   };
 
-  if (otpSent) {
-    return <OtpVerify phone={phone} onBack={() => setOtpSent(false)} />;
-  }
-
   return (
-    <div className="w-full">
-      {/* Card */}
-      <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600">Enter your phone number to continue</p>
-        </div>
+    <div className="bg-white rounded-2xl shadow-2xl p-8 w-full">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          {step === "phone" ? "Welcome Back" : "Verify OTP"}
+        </h2>
+        <p className="text-gray-600">
+          {step === "phone"
+            ? "Enter your phone number to continue"
+            : `We've sent a code to +91 ${phone}`}
+        </p>
+      </div>
 
-        {/* Phone Input */}
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-gray-700"
-            >
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+          {error}
+        </div>
+      )}
+
+      {step === "phone" ? (
+        <form onSubmit={handleSendOTP}>
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-2">
               Phone Number
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="text-gray-500 font-medium">+91</span>
-              </div>
+            <div className="flex items-center border-2 border-gray-300 rounded-lg focus-within:border-green-500 transition-colors">
+              <span className="px-4 text-gray-600 font-medium">+91</span>
               <input
-                id="phone"
                 type="tel"
-                placeholder="9876543210"
                 value={phone}
-                onChange={handlePhoneChange}
-                onKeyPress={handleKeyPress}
-                className={`w-full pl-16 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  error
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-200 bg-gray-50"
-                }`}
+                onChange={(e) =>
+                  setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                }
+                placeholder="Enter 10-digit number"
+                className="flex-1 px-4 py-3 outline-none rounded-r-lg"
+                maxLength={10}
                 disabled={loading}
               />
             </div>
-            {error && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                {error}
-              </p>
-            )}
           </div>
 
-          {/* Send OTP Button */}
           <button
-            onClick={sendOTP}
-            disabled={loading || phone.length !== 10}
-            className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 ${
-              loading || phone.length !== 10
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            }`}
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Sending OTP...
-              </span>
-            ) : (
-              "Send OTP"
-            )}
+            {loading ? "Sending..." : "Send OTP"}
           </button>
-        </div>
+        </form>
+      ) : (
+        <form onSubmit={handleVerifyOTP}>
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-2">
+              Enter OTP
+            </label>
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) =>
+                setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+              placeholder="Enter 6-digit OTP"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg outline-none focus:border-green-500 transition-colors"
+              maxLength={6}
+              disabled={loading}
+            />
+          </div>
 
-        {/* Info */}
-        <div className="pt-4 border-t border-gray-100">
-          <p className="text-xs text-gray-500 text-center">
-            By continuing, you agree to receive an OTP via SMS for verification
-            purposes
-          </p>
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+          >
+            {loading ? "Verifying..." : "Verify OTP"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setStep("phone");
+              setOtp("");
+              setError("");
+            }}
+            className="w-full text-green-600 font-medium py-2 hover:text-green-700 transition-colors"
+          >
+            Change Phone Number
+          </button>
+        </form>
+      )}
+
+      <div className="mt-6 text-center text-sm text-gray-500">
+        By continuing, you agree to our{" "}
+        <a href="/terms" className="text-green-600 hover:underline">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="/privacy" className="text-green-600 hover:underline">
+          Privacy Policy
+        </a>
       </div>
-
-      {/* Footer */}
-      <p className="text-center text-sm text-gray-600 mt-6">
-        Secure login powered by OTP verification
-      </p>
     </div>
   );
 }

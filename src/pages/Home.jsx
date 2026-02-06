@@ -5,12 +5,11 @@ import Dairy from "../components/Categories/Dairy";
 import Rolling from "../components/Categories/Rolling";
 import Hookah from "../components/Categories/Hookah";
 import ColdDrinks from "../components/Categories/ColdDrinks";
-import ItemsAdd from "../components/UI/ItemsAdd";
 import Loader from "../components/UI/Loader";
 import MouthFreshner from "../components/Categories/MouthFreshner";
 import Candies from "../components/Categories/Candies";
 
-function Home({ clone, setClone, toggleClone }) {
+function Home() {
   const initialShown = sessionStorage.getItem("appInitialized") === "true";
   const [loading, setLoading] = useState(() => (initialShown ? false : true));
 
@@ -39,7 +38,6 @@ function Home({ clone, setClone, toggleClone }) {
       <MouthFreshner />
       <Candies />
       <Rolling />
-      <ItemsAdd clone={clone} setClone={setClone} toggleClone={toggleClone} />
     </>
   );
 }

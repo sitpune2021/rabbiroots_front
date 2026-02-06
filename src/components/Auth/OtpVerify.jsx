@@ -93,9 +93,7 @@ export default function OtpVerify({ phone, onBack }) {
     inputRefs.current[0]?.focus();
 
     try {
-      // Simulate API call - replace with your actual API endpoint
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // await axios.post("http://localhost:5000/auth/send-otp", { phone });
       console.log("OTP Resent!");
     } catch (err) {
       console.error(err);

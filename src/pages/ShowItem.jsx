@@ -18,7 +18,7 @@ import {
   Clock,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import RelatedProduct from "./RelatedProduct";
 function ShowItem() {
   const { id } = useParams();
   const initialShown = sessionStorage.getItem("appInitialized") === "true";
@@ -42,7 +42,7 @@ function ShowItem() {
   const item = allProducts.find(
     (product) =>
       String(product.globalId) === String(id) ||
-      Number(product.globalId) === Number(id)
+      Number(product.globalId) === Number(id),
   );
 
   useEffect(() => {
@@ -57,15 +57,15 @@ function ShowItem() {
   }, [initialShown]);
 
   useEffect(() => {
-    if (item) document.title = `${item.name} • Blinkit`;
-    return () => (document.title = "Blinkit");
+    if (item) document.title = `${item.name} • RabbiRoot`;
+    return () => (document.title = "RabbiRoot");
   }, [item]);
 
   useEffect(() => setSelectedImageIndex(0), [item]);
 
   const related = useMemo(
-    () => allProducts.filter((p) => p.globalId !== item?.globalId).slice(0, 8),
-    [allProducts, item]
+    () => allProducts.filter((p) => p.globalId !== item?.globalId).slice(0, 12),
+    [allProducts, item],
   );
 
   if (!item && !loading) {
@@ -126,7 +126,7 @@ function ShowItem() {
     const percentY = (y / rect.height) * 100;
 
     const bgSize = `${Math.round(rect.width * ZOOM_SCALE)}px ${Math.round(
-      rect.height * ZOOM_SCALE
+      rect.height * ZOOM_SCALE,
     )}px`;
     const bgPos = `${percentX}% ${percentY}%`;
 
@@ -141,9 +141,9 @@ function ShowItem() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-20">
+    <div className="min-h-screen bg-[#F8F9FA] pb-20 md:pb-8">
       {/* Breadcrumbs */}
-      <div className="bg-white border-b border-gray-100 sticky top-[68px] z-40 shadow-sm">
+      <div className="bg-white border-b border-gray-100 sticky top-[72px] md:top-[68px] z-40 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center text-sm text-gray-500">
           <Link
             to="/"
@@ -152,9 +152,12 @@ function ShowItem() {
             <Home size={16} /> Home
           </Link>
           <ChevronRight size={14} className="mx-2 text-gray-400" />
-          <span className="hover:text-green-600 transition-colors cursor-pointer">
+          <Link
+            to="/"
+            className="hover:text-green-600 transition-colors"
+          >
             Categories
-          </span>
+          </Link>
           <ChevronRight size={14} className="mx-2 text-gray-400" />
           <span className="text-gray-900 font-medium truncate max-w-[200px]">
             {item.name}
@@ -162,21 +165,20 @@ function ShowItem() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:gap-12">
           {/* Left Column: Images */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="flex flex-col-reverse lg:flex-row gap-4">
-
+          <div className="lg:col-span-7 space-y-3 md:space-y-6">
+            <div className="flex flex-col-reverse lg:flex-row gap-3 md:gap-4">
               {/* Thumbnails (Vertical on desktop, Horizontal on mobile) */}
-              
+
               {gallery.length > 1 && (
-                <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:max-h-[500px] scrollbar-hide py-2 lg:py-0 px-1 lg:px-0">
+                <div className="flex lg:flex-col gap-2 md:gap-3 overflow-x-auto lg:overflow-y-auto lg:max-h-[500px] scrollbar-hide py-1 md:py-2 lg:py-0 px-1 lg:px-0">
                   {gallery.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImageIndex(idx)}
-                      className={`relative flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+                      className={`relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg md:rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                         selectedImageIndex === idx
                           ? "border-green-500 ring-2 ring-green-100"
                           : "border-gray-200 hover:border-green-300"
@@ -194,7 +196,7 @@ function ShowItem() {
 
               {/* Main Image */}
               <div className="flex-1 relative group z-20">
-                <div className="relative bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden aspect-square lg:aspect-[4/3] flex items-center justify-center p-8">
+                <div className="relative bg-white rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm overflow-hidden aspect-square lg:aspect-[4/3] flex items-center justify-center p-4 md:p-8">
                   <div
                     ref={mainImgRef}
                     onMouseMove={onMouseMove}
@@ -229,11 +231,11 @@ function ShowItem() {
                   {/* Wishlist Button */}
                   <button
                     onClick={() => setIsWishlisted(!isWishlisted)}
-                    className="absolute top-4 right-4 p-3 bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 transition-transform active:scale-95 z-10"
+                    className="absolute top-3 right-3 md:top-4 md:right-4 p-2 md:p-3 bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 transition-transform active:scale-95 z-10"
                   >
                     <Heart
-                      size={20}
-                      className={`transition-colors ${
+                      size={18}
+                      className={`md:w-5 md:h-5 transition-colors ${
                         isWishlisted
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
@@ -262,21 +264,21 @@ function ShowItem() {
 
             {/* Highlights / Features */}
             {item.featureImages && item.featureImages.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-4 md:mt-8">
                 {item.featureImages.slice(0, 4).map((feat, i) => (
                   <div
                     key={i}
-                    className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition-shadow"
+                    className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition-shadow"
                   >
                     <img
                       src={feat.image}
                       alt=""
-                      className="w-16 h-16 object-contain mb-3"
+                      className="w-12 h-12 md:w-16 md:h-16 object-contain mb-2 md:mb-3"
                     />
-                    <h4 className="font-semibold text-gray-900 text-sm">
+                    <h4 className="font-semibold text-gray-900 text-xs md:text-sm">
                       {feat.title}
                     </h4>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-[10px] md:text-xs text-gray-500 mt-1">
                       {feat.description}
                     </p>
                   </div>
@@ -285,17 +287,17 @@ function ShowItem() {
             )}
 
             {/* Description */}
-            <div className="mt-8 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4 text-lg">
+            <div className="mt-4 md:mt-8 bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-3 md:mb-4 text-base md:text-lg">
                 Product Details
               </h3>
-              <div className="text-sm text-gray-600 leading-relaxed space-y-3">
+              <div className="text-xs md:text-sm text-gray-600 leading-relaxed space-y-2 md:space-y-3">
                 <p>
                   {item.description ||
                     item.short ||
                     "Experience the best quality with our premium selection. Carefully sourced and packed with care."}
                 </p>
-                <ul className="list-disc list-inside mt-2 space-y-2 text-gray-500">
+                <ul className="list-disc list-inside mt-2 space-y-1 md:space-y-2 text-gray-500">
                   <li>Premium Quality</li>
                   <li>Freshly Sourced</li>
                   <li>Best Market Price</li>
@@ -306,85 +308,92 @@ function ShowItem() {
 
           {/* Right Column: Details */}
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 sticky top-24">
+            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-24">
               {/* Header */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 text-green-700 font-bold text-xs uppercase tracking-wider mb-3 bg-green-50 w-fit px-3 py-1 rounded-full border border-green-100">
-                  <Clock size={12} />
+              <div className="mb-4 md:mb-6">
+                <div className="flex items-center gap-1.5 md:gap-2 text-green-700 font-bold text-[10px] md:text-xs uppercase tracking-wider mb-2 md:mb-3 bg-green-50 w-fit px-2 md:px-3 py-1 rounded-full border border-green-100">
+                  <Clock size={10} className="md:w-3 md:h-3" />
                   {item.deliveryTime || "10 MINS"}
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-2">
+                <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-2">
                   {item.name}
                 </h1>
-                <div className="flex items-center gap-4 mt-3">
+                <div className="flex items-center gap-3 md:gap-4 mt-2 md:mt-3">
                   <div className="flex items-center bg-green-50 px-2 py-1 rounded-lg gap-1 border border-green-100">
                     <div className="flex text-yellow-400">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={14} fill="currentColor" />
+                        <Star
+                          key={i}
+                          size={12}
+                          className="md:w-3.5 md:h-3.5"
+                          fill="currentColor"
+                        />
                       ))}
                     </div>
-                    <span className="text-xs font-bold text-green-800 ml-1">
+                    <span className="text-[10px] md:text-xs font-bold text-green-800 ml-1">
                       4.8
                     </span>
                   </div>
-                  <span className="text-sm text-gray-500 font-medium">
+                  <span className="text-xs md:text-sm text-gray-500 font-medium">
                     235 Reviews
                   </span>
                 </div>
               </div>
 
-              <div className="h-px bg-gray-100 my-6" />
+              <div className="h-px bg-gray-100 my-4 md:my-6" />
 
               {/* Price & Size */}
-              <div className="flex items-end justify-between mb-8">
+              <div className="flex items-end justify-between mb-4 md:mb-8">
                 <div>
-                  <p className="text-sm text-gray-500 font-medium mb-1">
+                  <p className="text-xs md:text-sm text-gray-500 font-medium mb-1">
                     Price
                   </p>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-4xl font-extrabold text-gray-900">
+                  <div className="flex items-baseline gap-2 md:gap-3">
+                    <span className="text-2xl md:text-4xl font-extrabold text-gray-900">
                       {formatPrice(item.price)}
                     </span>
                     {item.originalPrice && (
-                      <span className="text-lg text-gray-400 line-through decoration-2">
+                      <span className="text-sm md:text-lg text-gray-400 line-through decoration-2">
                         {formatPrice(item.originalPrice)}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-[10px] md:text-xs text-gray-400 mt-1">
                     (Inclusive of all taxes)
                   </p>
                 </div>
                 {item.discount && (
-                  <div className="bg-red-500 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg shadow-red-200">
+                  <div className="bg-red-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl font-bold text-xs md:text-sm shadow-lg shadow-red-200">
                     {item.discount} OFF
                   </div>
                 )}
               </div>
 
               {/* Quantity & Add */}
-              <div className="space-y-4 mb-8">
-                <div className="flex items-center justify-between bg-gray-50 p-2 rounded-2xl border border-gray-100">
-                  <div className="flex items-center gap-4">
+              <div className="space-y-3 md:space-y-4 mb-4 md:mb-8">
+                <div className="flex items-center justify-between bg-gray-50 p-2 rounded-xl md:rounded-2xl border border-gray-100">
+                  <div className="flex items-center gap-3 md:gap-4">
                     <button
                       onClick={decrease}
-                      className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-200 hover:border-green-500 hover:text-green-600 transition-all active:scale-95"
+                      className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 hover:border-green-500 hover:text-green-600 transition-all active:scale-95"
                     >
-                      <Minus size={20} />
+                      <Minus size={16} className="md:w-5 md:h-5" />
                     </button>
-                    <span className="text-xl font-bold text-gray-900 w-8 text-center">
+                    <span className="text-lg md:text-xl font-bold text-gray-900 w-6 md:w-8 text-center">
                       {quantity}
                     </span>
                     <button
                       onClick={increase}
-                      className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-200 hover:border-green-500 hover:text-green-600 transition-all active:scale-95"
+                      className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 hover:border-green-500 hover:text-green-600 transition-all active:scale-95"
                     >
-                      <Plus size={20} />
+                      <Plus size={16} className="md:w-5 md:h-5" />
                     </button>
                   </div>
-                  <div className="text-right pr-4">
-                    <p className="text-xs text-gray-500">Total</p>
-                    <p className="font-bold text-gray-900">
+                  <div className="text-right pr-3 md:pr-4">
+                    <p className="text-[10px] md:text-xs text-gray-500">
+                      Total
+                    </p>
+                    <p className="font-bold text-sm md:text-base text-gray-900">
                       {typeof item.price === "number"
                         ? `₹${item.price * quantity}`
                         : item.price}
@@ -397,7 +406,7 @@ function ShowItem() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
                   disabled={addSuccess}
-                  className={`w-full py-4 rounded-2xl font-bold text-lg shadow-xl flex items-center justify-center gap-3 transition-all duration-300 ${
+                  className={`w-full py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-lg shadow-xl flex items-center justify-center gap-2 md:gap-3 transition-all duration-300 ${
                     addSuccess
                       ? "bg-green-700 text-white cursor-default"
                       : "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:shadow-green-200"
@@ -405,7 +414,10 @@ function ShowItem() {
                 >
                   {addSuccess ? (
                     <>
-                      <ShoppingBag className="animate-bounce" />
+                      <ShoppingBag
+                        size={18}
+                        className="md:w-6 md:h-6 animate-bounce"
+                      />
                       Added to Cart!
                     </>
                   ) : (
@@ -415,28 +427,28 @@ function ShowItem() {
               </div>
 
               {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4 py-6 border-t border-gray-100">
-                <div className="flex flex-col items-center text-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
-                    <Truck size={20} />
+              <div className="grid grid-cols-3 gap-2 md:gap-4 py-4 md:py-6 border-t border-gray-100">
+                <div className="flex flex-col items-center text-center gap-1 md:gap-2">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
+                    <Truck size={16} className="md:w-5 md:h-5" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-700">
+                  <span className="text-[10px] md:text-xs font-semibold text-gray-700">
                     Superfast Delivery
                   </span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                    <Shield size={20} />
+                <div className="flex flex-col items-center text-center gap-1 md:gap-2">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                    <Shield size={16} className="md:w-5 md:h-5" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-700">
+                  <span className="text-[10px] md:text-xs font-semibold text-gray-700">
                     Secure Payment
                   </span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
-                    <Repeat size={20} />
+                <div className="flex flex-col items-center text-center gap-1 md:gap-2">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
+                    <Repeat size={16} className="md:w-5 md:h-5" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-700">
+                  <span className="text-[10px] md:text-xs font-semibold text-gray-700">
                     Easy Returns
                   </span>
                 </div>
@@ -446,53 +458,7 @@ function ShowItem() {
         </div>
 
         {/* Related Products */}
-        <div className="mt-20">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
-              You Might Also Like
-            </h2>
-            <Link
-              to="/"
-              className="text-green-600 font-semibold hover:text-green-700 flex items-center gap-1"
-            >
-              View All <ChevronRight size={18} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {related.map((p) => (
-              <Link
-                to={`/showItem/${p.globalId}`}
-                key={p.globalId}
-                className="group bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="aspect-[4/3] mb-4 overflow-hidden rounded-xl bg-gray-50 relative">
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-green-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    ADD
-                  </div>
-                </div>
-                <h3 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 min-h-[40px]">
-                  {p.name}
-                </h3>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-bold text-gray-900">
-                    {formatPrice(p.price)}
-                  </span>
-                  {p.originalPrice && (
-                    <span className="text-xs text-gray-400 line-through">
-                      {formatPrice(p.originalPrice)}
-                    </span>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <RelatedProduct related={related} />
       </div>
     </div>
   );

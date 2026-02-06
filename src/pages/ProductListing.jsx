@@ -296,7 +296,7 @@ const products = [
 
 function App() {
   const [sidebarCategories, setSidebarCategories] = useState(
-    categories.map((cat) => ({ ...cat, expanded: false }))
+    categories.map((cat) => ({ ...cat, expanded: false })),
   );
   const [selectedCategory, setSelectedCategory] = useState(0);
 
@@ -305,7 +305,7 @@ function App() {
       prev.map((cat, i) => ({
         ...cat,
         expanded: i === index ? !cat.expanded : cat.expanded,
-      }))
+      })),
     );
   };
 
@@ -350,25 +350,25 @@ function App() {
 
   return (
     <div className="w-full min-h-screen flex flex-col py-3 md:py-6 px-3 md:px-22 max-lg:px-8 shadow-sm bg-gray-100">
-      <div className="flex gap-2 md:gap-4 p-2 md:p-6 flex-1 overflow-hidden flex-col md:flex-row">
-        <aside className="hidden md:flex w-full md:w-28 sticky top-0 flex-shrink-0 shadow-lg md:h-screen overflow-y-auto bg-white p-2 md:p-3 rounded-lg flex-col gap-2">
-          <h2 className="text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3 text-center">
+      <div className="flex gap-2 md:gap-4 p-1 md:p-6 flex-1 overflow-hidden flex-row">
+        <aside className="flex w-16 md:w-28 sticky top-0 flex-shrink-0 shadow-lg h-[calc(100vh-100px)] md:h-screen overflow-y-auto bg-white p-1 md:p-3 rounded-lg flex-col gap-2 scrollbar-hide">
+          <h2 className="text-[10px] md:text-sm font-semibold text-gray-700 mb-1 md:mb-3 text-center">
             Products
           </h2>
-          <div className="flex flex-col gap-2 md:gap-3">
-            {products.slice(0, 5).map((prod) => (
+          <div className="flex flex-col gap-1 md:gap-3">
+            {products.slice(0, 10).map((prod) => (
               <div
                 key={prod.id}
-                className="flex flex-col items-center text-center rounded p-1 md:p-2 bg-white hover:shadow-sm transition"
+                className="flex flex-col items-center text-center rounded p-1 md:p-2 bg-white hover:shadow-sm transition cursor-pointer"
               >
-                <div className="w-12 h-12 md:w-15 md:h-15 mb-1 rounded overflow-hidden">
+                <div className="w-10 h-10 md:w-15 md:h-15 mb-1 rounded overflow-hidden">
                   <img
                     src={prod.image}
                     alt={prod.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="text-xs text-gray-700 w-16 md:w-20 break-words">
+                <div className="text-[8px] md:text-[10px] text-gray-700 w-full break-words leading-tight">
                   {prod.name}
                 </div>
               </div>

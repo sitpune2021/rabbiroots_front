@@ -27,30 +27,48 @@ function Search() {
   };
 
   return (
-    <div className="relative w-1/2">
-      <div className="bg-zinc-100 py-3 px-5 flex items-center gap-2 rounded-xl hover:bg-zinc-200 transition-all duration-300">
-        <i className="ri-search-line"></i>
+    <div className="relative w-full max-w-2xl mx-auto">
+      <div className="flex items-center gap-2 md:gap-3 bg-gray-50 md:bg-white border border-gray-200 rounded-xl px-4 py-2 md:py-2.5 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100 transition-all duration-200 group shadow-sm md:shadow-none">
+        <i className="ri-search-line text-gray-400 md:text-gray-500 group-focus-within:text-green-600 text-lg md:text-xl"></i>
         <input
           type="text"
-          placeholder={`Search ${products[index]}...`}
-          className="border-transparent w-full outline-none bg-transparent"
+          placeholder={`Search for ${products[index]}...`}
+          className="w-full bg-transparent border-none outline-none text-sm md:text-base font-medium text-gray-800 placeholder:text-gray-400"
           onChange={handleChange}
           value={term}
         />
+        {term && (
+          <button
+            onClick={() => dispatch(clearSearch())}
+            className="text-gray-400 hover:text-red-500 transition-colors duration-200 flex-shrink-0"
+          >
+            <i className="ri-close-circle-fill text-lg md:text-xl"></i>
+          </button>
+        )}
       </div>
 
       {term && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-2 max-h-[30rem] overflow-y-auto z-50">
+        <div className="absolute top-full left-0 w-full bg-white shadow-2xl md:shadow-lg rounded-2xl md:rounded-lg mt-2 max-h-[30rem] overflow-y-auto z-50 border border-gray-100">
           {items.length === 0 ? (
-            <p className="p-3 text-gray-500">No results found</p>
+            <div className="p-6 md:p-3 text-center">
+              <i className="ri-search-line text-4xl md:text-2xl text-gray-300 mb-2 block md:hidden"></i>
+              <p className="text-gray-500 font-medium md:font-normal">
+                No results found
+              </p>
+            </div>
           ) : (
             items.map((item) => (
               <Link to={`/showitem/${item.globalId}`} key={item.globalId}>
                 <div
-                  className="p-3 hover:bg-gray-100 cursor-pointer"
+                  className="p-4 md:p-3 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 md:hover:bg-gray-100 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-b-0 group"
                   onClick={handleSelect}
                 >
-                  <div className="flex items-center gap-3">{item.name}</div>
+                  <div className="flex items-center gap-3">
+                    <i className="ri-shopping-bag-line text-green-600 text-lg md:text-base group-hover:scale-110 transition-transform duration-200"></i>
+                    <span className="text-gray-800 font-medium md:font-normal text-sm md:text-base group-hover:text-green-600 transition-colors duration-200">
+                      {item.name}
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))
