@@ -1,8 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
-function Location() {
-  const [open, setOpen] = useState(false);
-  const [city, setCity] = useState("Mumbai, 400001");
+function Location({
+  city,
+  setCity,
+  open: externalOpen,
+  setOpen: setExternalOpen,
+  className = "",
+}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen =
+    setExternalOpen !== undefined ? setExternalOpen : setInternalOpen;
+
   const [input, setInput] = useState("");
   const ref = useRef(null);
 
@@ -48,7 +57,7 @@ function Location() {
 
   return (
     <div className="relative" ref={ref}>
-      <div className="flex items-center gap-4">
+      <div className={`flex items-center gap-4 ${className}`}>
         <div
           className="cursor-pointer group"
           onClick={() => setOpen((o) => !o)}
@@ -80,63 +89,69 @@ function Location() {
       </div>
 
       {open && (
-        <div
-          className="absolute mt-5 righ t-0 w-72 bg-white p-5 z-20 
-rounded-[16px] shadow-[0_6px_20px_rgba(0,0,0,0.15)] border border-gray-100 
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-[90] lg:hidden"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            className="fixed lg:absolute top-1/2 left-1/2 lg:top-auto lg:left-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 mt-0 lg:mt-5 lg:right-0 w-[90%] max-w-[320px] lg:w-72 bg-white p-5 z-[100] 
+rounded-[20px] lg:rounded-[16px] shadow-2xl lg:shadow-[0_6px_20px_rgba(0,0,0,0.15)] border border-gray-100 
 animate-softPop"
-        >
-          <button
-            onClick={handleDetect}
-            className="w-full text-sm text-left px-4 py-3 rounded-[10px] 
-    bg-gray-100 hover:bg-gray-200 transition font-medium"
           >
-            Detect my location
-          </button>
+            <button
+              onClick={handleDetect}
+              className="w-full text-sm text-left px-4 py-3 rounded-[10px] 
+    bg-gray-100 hover:bg-gray-200 transition font-medium"
+            >
+              Detect my location
+            </button>
 
-          <div className="mt-5">
-            <label className="text-xs font-semibold text-gray-600">
-              Add city
-            </label>
-            <div className="flex items-center gap-3 mt-2">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Enter city name"
-                className="flex-1 border border-gray-300 rounded-[10px] px-3 py-2 text-sm 
+            <div className="mt-5">
+              <label className="text-xs font-semibold text-gray-600">
+                Add city
+              </label>
+              <div className="flex items-center gap-3 mt-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Enter city name"
+                  className="flex-1 border border-gray-300 rounded-[10px] px-3 py-2 text-sm 
                 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-              />
-              <button
-                onClick={handleSave}
-                className="bg-green-600 hover:bg-green-700 transition text-white px-4 py-2 
+                />
+                <button
+                  onClick={handleSave}
+                  className="bg-green-600 hover:bg-green-700 transition text-white px-4 py-2 
                 rounded-[10px] text-sm font-medium"
-              >
-                Save
-              </button>
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <p className="text-xs font-semibold text-gray-600">
+                Popular cities
+              </p>
+              <ul className="mt-2 space-y-1">
+                {popular.map((p) => (
+                  <li key={p}>
+                    <button
+                      onClick={() => {
+                        setCity(p);
+                        setOpen(false);
+                      }}
+                      className="text-sm w-full text-left px-4 py-2 rounded-[14px] 
+            hover:bg-gray-100 transition"
+                    >
+                      {p}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-
-          <div className="mt-5">
-            <p className="text-xs font-semibold text-gray-600">
-              Popular cities
-            </p>
-            <ul className="mt-2 space-y-1">
-              {popular.map((p) => (
-                <li key={p}>
-                  <button
-                    onClick={() => {
-                      setCity(p);
-                      setOpen(false);
-                    }}
-                    className="text-sm w-full text-left px-4 py-2 rounded-[14px] 
-            hover:bg-gray-100 transition"
-                  >
-                    {p}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

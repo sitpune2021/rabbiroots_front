@@ -14,7 +14,7 @@ import ReturnPolicy from "../../pages/Policy/ReturnPolicy";
 
 function Layout() {
   return (
-    <div className="w-full h-full mt-17">
+    <div className="w-full h-full mt-20">
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -27,6 +27,10 @@ function Layout() {
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
+        <Route path="/account/addresses" element={<Account />} />
+        <Route path="/account/orders" element={<Account />} />
+        <Route path="/account/giftcards" element={<Account />} />
+        <Route path="/account/privacy" element={<Account />} />
       </Routes>
     </div>
   );

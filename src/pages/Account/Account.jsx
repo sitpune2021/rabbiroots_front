@@ -7,7 +7,6 @@ import { PiGiftBold } from "react-icons/pi";
 import { FiPackage } from "react-icons/fi";
 import { FaRegAddressCard } from "react-icons/fa";
 
-
 import { logout } from "../../features/AuthSlice.js";
 import Addresses from "./Addresses";
 import Orders from "./Orders";
@@ -25,15 +24,25 @@ const Account = () => {
 
   useEffect(() => {
     try {
+      const path = location.pathname;
       const params = new URLSearchParams(location.search);
-      const section = params.get("section");
-      if (section) setActiveSection(section);
+      const sectionParam = params.get("section");
+
+      if (path.includes("/account/addresses")) setActiveSection("addresses");
+      else if (path.includes("/account/orders")) setActiveSection("orders");
+      else if (path.includes("/account/giftcards"))
+        setActiveSection("giftcards");
+      else if (path.includes("/account/privacy")) setActiveSection("privacy");
+      else if (sectionParam) setActiveSection(sectionParam);
     } catch (e) {
+      console.error("Error setting active section:", e);
     }
-  }, [location.search]);
+  }, [location.pathname, location.search]);
 
   const handleMenuClick = (section) => {
     setActiveSection(section);
+    if (section === "home") navigate("/account");
+    else navigate(`/account/${section}`);
   };
 
   const handleLogout = () => {
@@ -63,7 +72,7 @@ const Account = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Navigation */}
-          <aside className="w-full md:w-55 flex-shrink-0">
+          <aside className="hidden md:block w-full md:w-55 flex-shrink-0">
             <nav className="bg-white rounded-lg shadow-sm p-6">
               <ul className="space-y-4">
                 <div className="mb-6 px-10 py-3 underline text-center">

@@ -12,7 +12,9 @@
   background-color: white;
   z-index: 9999;
   pointer-events: none;
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
 }
 
 .zoom-lens {
@@ -30,4 +32,18 @@
   .zoom-preview {
     display: none;
   }
+}
+
+@keyframes bounce-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 3s ease-in-out infinite;
 }

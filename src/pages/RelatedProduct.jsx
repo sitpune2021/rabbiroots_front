@@ -1,10 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, FreeMode } from "swiper/modules";
 import { Link } from "react-router-dom";
 import ProductDesign from "../components/Common/ProductDesign.jsx";
-import { ChevronRight } from "lucide-react";
 import Heading from "../components/Common/Heading";
+
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,39 +15,37 @@ import "swiper/css/navigation";
 import "swiper/css/free-mode";
 
 function RelatedProduct({ related }) {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const [prevEl, setPrevEl] = useState(null);
+  const [nextEl, setNextEl] = useState(null);
 
   if (!related || related.length === 0) return null;
 
   return (
     <div className="mt-8 md:mt-20">
       <div className="flex items-center justify-between mb-4 md:mb-8">
-        <Heading  title="Related Products" />
+        <Heading title="Related Products" />
         <Link
           to="/"
           className="text-green-600 font-semibold hover:text-green-700 flex items-center gap-1 text-sm md:text-base"
         >
-          View All <ChevronRight size={16} />
+          View All <ChevronRightIcon sx={{ fontSize: 18 }} />
         </Link>
       </div>
 
-      <div className="w-full relative">
+      <div className="w-full relative px-2 md:px-0">
         <button
-          ref={prevRef}
-          className="custom-swiper-button-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white text-gray-600 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shadow-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-110"
-          style={{ left: "-12px" }}
+          ref={(node) => setPrevEl(node)}
+          className="absolute left-0 lg:-left-5 top-1/2 -translate-y-1/2 z-40 bg-green-600 text-white rounded-full w-10 h-10 hidden md:flex items-center justify-center shadow-lg hover:bg-green-700 transition-all duration-300 disabled:opacity-0 disabled:pointer-events-none"
           aria-label="Previous"
         >
-          <i className="ri-arrow-left-s-line text-xl md:text-2xl"></i>
+          <ArrowBackIosNewIcon sx={{ fontSize: 18 }} />
         </button>
         <button
-          ref={nextRef}
-          className="custom-swiper-button-next absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white text-gray-600 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shadow-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-110"
-          style={{ right: "-12px" }}
+          ref={(node) => setNextEl(node)}
+          className="absolute right-0 lg:-right-5 top-1/2 -translate-y-1/2 z-40 bg-green-600 text-white rounded-full w-10 h-10 hidden md:flex items-center justify-center shadow-lg hover:bg-green-700 transition-all duration-300 disabled:opacity-0 disabled:pointer-events-none"
           aria-label="Next"
         >
-          <i className="ri-arrow-right-s-line text-xl md:text-2xl"></i>
+          <ArrowForwardIosIcon sx={{ fontSize: 18 }} />
         </button>
 
         <Swiper
@@ -56,36 +57,17 @@ function RelatedProduct({ related }) {
             sticky: false,
           }}
           navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
+            prevEl,
+            nextEl,
           }}
           breakpoints={{
-            300: {
-              slidesPerView: 2.5,
-              spaceBetween: 12,
-            },
-            640: {
-              slidesPerView: 3,
-              spaceBetween: 16,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 5,
-              spaceBetween: 24,
-            },
-            1280: {
-              slidesPerView: 6,
-              spaceBetween: 30,
-            },
+            300: { slidesPerView: 2.5, spaceBetween: 12 },
+            640: { slidesPerView: 3, spaceBetween: 16 },
+            768: { slidesPerView: 3, spaceBetween: 20 },
+            1024: { slidesPerView: 5, spaceBetween: 24 },
+            1280: { slidesPerView: 6, spaceBetween: 30 },
           }}
-          onBeforeInit={(swiper) => {
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
-          }}
-          className="w-full pb-2"
+          className="w-full pb-2 swiper-visible-nav"
         >
           {related.map((item, idx) => (
             <SwiperSlide key={item.globalId || idx} className="h-auto">
@@ -95,78 +77,6 @@ function RelatedProduct({ related }) {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
-      <div className="mt-5 md:mt-10">
-        <div className="w-full relative">
-          <button
-            ref={prevRef}
-            className="custom-swiper-button-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white text-gray-600 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shadow-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-110"
-            style={{ left: "-12px" }}
-            aria-label="Previous"
-          >
-            <i className="ri-arrow-left-s-line text-xl md:text-2xl"></i>
-          </button>
-          <button
-            ref={nextRef}
-            className="custom-swiper-button-next absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white text-gray-600 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shadow-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-110"
-            style={{ right: "-12px" }}
-            aria-label="Next"
-          >
-            <i className="ri-arrow-right-s-line text-xl md:text-2xl"></i>
-          </button>
-
-          <Swiper
-            slidesPerView={6}
-            spaceBetween={30}
-            modules={[Pagination, Navigation, FreeMode]}
-            freeMode={{
-              enabled: true,
-              sticky: false,
-            }}
-            navigation={{
-              prevEl: prevRef.current,
-              nextEl: nextRef.current,
-            }}
-            breakpoints={{
-              300: {
-                slidesPerView: 2.5,
-                spaceBetween: 12,
-              },
-              640: {
-                slidesPerView: 3,
-                spaceBetween: 16,
-              },
-              768: {
-                slidesPerView: 3,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 5,
-                spaceBetween: 24,
-              },
-              1280: {
-                slidesPerView: 6,
-                spaceBetween: 30,
-              },
-            }}
-            onBeforeInit={(swiper) => {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }}
-            className="w-full pb-2"
-          >
-            {related.map((item, idx) => (
-              <SwiperSlide key={item.globalId || idx} className="h-auto">
-                <Link
-                  to={`/showitem/${item.globalId}`}
-                  className="block h-full"
-                >
-                  <ProductDesign item={item} />
-                </Link>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
       </div>
     </div>
   );

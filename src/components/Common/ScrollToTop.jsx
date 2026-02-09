@@ -1,7 +1,7 @@
-// src/ScrollToTop.jsx
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import KeyboardCapslockIcon from "@mui/icons-material/KeyboardCapslock";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -14,6 +14,7 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
+      // Show button after scrolling 300px
       if (window.pageYOffset > 300) {
         setIsVisible(true);
       } else {
@@ -22,33 +23,33 @@ const ScrollToTop = () => {
     };
 
     window.addEventListener("scroll", toggleVisibility);
-
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
   };
 
   return (
-    <>
+    <AnimatePresence>
       {isVisible && (
         <motion.button
-          className="fixed bottom-6 right-6 bg-green-600 text-white p-3 rounded-full shadow-lg z-50 md:hidden"
+          className="fixed bottom-24 right-6 bg-white/90 backdrop-blur-md text-green-600 border border-green-100 p-3 rounded-2xl shadow-2xl z-50 md:hidden flex items-center justify-center animate-bounce-subtle"
           onClick={scrollToTop}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          initial={{ scale: 0, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0, opacity: 0, y: 20 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Scroll to top"
         >
-          <i className="ri-arrow-up-line text-xl"></i>
+          <KeyboardCapslockIcon sx={{ fontSize: 28 }} />
         </motion.button>
       )}
-    </>
+    </AnimatePresence>
   );
 };
 
