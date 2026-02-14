@@ -28,7 +28,7 @@ function MiniTopbar() {
             delay: 3000,
             disableOnInteraction: false,
           }}
-          loop={true}
+          loop={bannerImages.length > 1}
           className="rounded-2xl overflow-hidden shadow-lg"
         >
           {bannerImages.map((img, index) => (

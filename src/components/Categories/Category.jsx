@@ -1,32 +1,86 @@
-import React from "react";
-import { categoryItem } from "../../Data/Category.js";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import Heading from "../Common/Heading.jsx";
+import {
+  fetchCategories,
+  selectCategories,
+  selectCategoriesLoading,
+  selectCategoriesError,
+} from "../../features/CategorySlice";
 
 function Category() {
-  return (
-    <div className="w-[95%] h-full px-4 md:px-[2rem] mx-auto max-lg:px-0 max-sm:px-2 py-6 md:py-3">
-      <div className="flex items-center justify-between mb-4 md:mb-0">
-        <Heading title="Shop by Category" />
-      </div>
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 md:gap-6 mt-4">
-        {categoryItem.map((items, idx) => (
-          <Link to={"/productlisting"} key={idx}>
-            <div className="flex flex-col items-center group cursor-pointer">
-              <div className="w-full aspect-square bg-gradient-to-br md:bg-white rounded-2xl md:rounded-xl p-2 md:p-3 flex items-center justify-center md:shadow-md  transition-all duration-300 border-2 border-transparent hover:border-green-500 md:border-gray-100 group-hover:scale-100">
-                <img
-                  src={items.image}
-                  alt={items.name || "Category"}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                />
+  const categories = useSelector(selectCategories);
+  const loading = useSelector(selectCategoriesLoading);
+  const error = useSelector(selectCategoriesError);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  if (location.pathname !== "/") {
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full mx-auto py-8 flex justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
+  if (!categories || categories.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="w-full  py-6 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Category Grid - 10 columns on large screens, 2 rows */}
+        <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-3 md:gap-4">
+          {categories.slice(0, 20).map((item) => (
+            <Link
+              to={`/productlisting?category=${item.slug}`}
+              key={item.id}
+              className="group"
+            >
+              <div className="flex flex-col items-center cursor-pointer">
+                {/* Image Container - Rounded square with soft shadow */}
+                <div className="w-full aspect-square bg-white rounded-2xl p-3 md:p-4 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105 border border-gray-100">
+                  <img
+                    src={
+                      item.images?.image ||
+                      item.images?.icon ||
+                      item.image ||
+                      "/placeholder.png"
+                    }
+                    alt={item.name || "Category"}
+                    className="w-full h-full object-contain mix-blend-multiply"
+                    onError={(e) => {
+                      e.target.src = "/placeholder.png";
+                    }}
+                  />
+                </div>
+
+                {/* Category Name */}
+                <p className="mt-2 text-xs md:text-sm font-medium text-gray-700 text-center group-hover:text-green-600 transition-colors line-clamp-2 leading-tight">
+                  {item.name}
+                </p>
               </div>
-              <p className="mt-2 md:mt-3 text-xs md:text-sm font-semibold text-gray-700 text-center group-hover:text-green-600 transition-colors duration-200 line-clamp-2">
-                {items.name}
-              </p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

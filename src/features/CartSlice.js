@@ -1,5 +1,8 @@
 ﻿import { createSlice } from "@reduxjs/toolkit";
 
+/**
+ * Load cart items from localStorage
+ */
 const loadCartFromStorage = () => {
   try {
     const savedCart = localStorage.getItem("cartItems");
@@ -10,6 +13,9 @@ const loadCartFromStorage = () => {
   }
 };
 
+/**
+ * Save cart items to localStorage
+ */
 const saveCartToStorage = (items) => {
   try {
     localStorage.setItem("cartItems", JSON.stringify(items));
@@ -23,10 +29,17 @@ const initialState = {
   isCartOpen: false,
 };
 
-const CartSlice = createSlice({
+/**
+ * Cart slice - manages shopping cart state
+ * Following industry-standard naming: cartSlice (camelCase)
+ */
+const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    /**
+     * Add item to cart or increment quantity if already exists
+     */
     addToCart: (state, action) => {
       const item = action.payload;
       const existing = state.items.find((i) => i.id === item.id);
@@ -39,6 +52,9 @@ const CartSlice = createSlice({
       saveCartToStorage(state.items);
     },
 
+    /**
+     * Remove item from cart or decrement quantity
+     */
     removeFromCart: (state, action) => {
       const existing = state.items.find((i) => i.id === action.payload);
       if (existing && existing.quantity > 1) {
@@ -49,25 +65,38 @@ const CartSlice = createSlice({
       saveCartToStorage(state.items);
     },
 
+    /**
+     * Clear all items from cart
+     */
     clearCart: (state) => {
       state.items = [];
       saveCartToStorage(state.items);
     },
 
+    /**
+     * Toggle cart open/closed
+     */
     toggleCart: (state) => {
       state.isCartOpen = !state.isCartOpen;
     },
 
+    /**
+     * Open cart
+     */
     openCart: (state) => {
       state.isCartOpen = true;
     },
 
+    /**
+     * Close cart
+     */
     closeCart: (state) => {
       state.isCartOpen = false;
     },
   },
 });
 
+// Export actions
 export const {
   addToCart,
   removeFromCart,
@@ -75,6 +104,18 @@ export const {
   toggleCart,
   openCart,
   closeCart,
-} = CartSlice.actions;
+} = cartSlice.actions;
 
-export default CartSlice.reducer;
+// Export selectors
+export const selectCartItems = (state) => state.cart.items;
+export const selectIsCartOpen = (state) => state.cart.isCartOpen;
+export const selectCartItemCount = (state) =>
+  state.cart.items.reduce((total, item) => total + item.quantity, 0);
+export const selectCartTotal = (state) =>
+  state.cart.items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+
+// Export reducer
+export default cartSlice.reducer;
